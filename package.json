@@ -13,7 +13,12 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:trace": "playwright test --trace on",
     "eslint": "eslint './**/*.{js,jsx}'",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "fly:stop": "fly scale count 0",
+    "fly:start": "fly scale count 1",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build && npm run deploy",
+    "logs:prod": "fly logs"
   },
   "repository": {
     "type": "git",
@@ -33,6 +38,7 @@
     "@babel/plugin-transform-runtime": "^7.23.7",
     "@babel/preset-env": "^7.23.7",
     "@babel/preset-react": "^7.23.3",
+    "@flydotio/dockerfile": "^0.7.10",
     "@playwright/test": "^1.56.0",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "^14.1.2",
