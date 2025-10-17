@@ -9,7 +9,19 @@ on:
     types: [opened, synchronize]
 
 jobs:
+  check_commit_messages_for_skip:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.check.outcome == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+      - if: ${{ contains(join(fromJson(toJson(github.event.commits)).*.message, ' | '), '#skip') }}
+        id: check
+        run: echo
+
   explore_github_context:
+    needs:
+      - check_commit_messages_for_skip
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,3 +39,7 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ join(fromJson(toJson(github.event.commits)).*.message, ' | ') }}
         run: echo "$COMMIT_MESSAGES"
+
+      - name: confirm skip
+        if: ${{ needs.check_commit_messages_for_skip.outputs.status == 'true' }}
+        run: '#skip confirmed'
