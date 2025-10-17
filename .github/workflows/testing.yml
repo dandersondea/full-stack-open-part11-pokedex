@@ -25,5 +25,5 @@ jobs:
         run: echo "$COMMITS"
       - name: commit messages
         env:
-          COMMIT_MESSAGES: ${{ fromJson(toJson(github.event.commits)).*.message }} # The .*. (wildcard) selector isn't supported inside ${{ ... }} -- GitHub Actions expressions don't allow you to map or iterate over arrays directly like that.
+          COMMIT_MESSAGES: ${{ join(fromJson(toJson(github.event.commits)).*.message, ' | ') }}
         run: echo "$COMMIT_MESSAGES"
