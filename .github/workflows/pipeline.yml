@@ -66,3 +66,31 @@ jobs:
           DEFAULT_BUMP: 'patch'
           INITIAL_VERSION: 0.0.0
           # DRY_RUN: true
+
+  notify_discord:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify success
+        uses: sarisia/actions-status-discord@v1
+        if: success() && github.event_name == 'push' && needs.check_commit_messages_for_skip.outputs.status != 'true'
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: A new version of Pokedex deployed
+          status: ${{ needs.simple_deployment_pipeline.result }}
+          title: 'Deploy'
+          color: 0x00FF00
+          username: GitHub
+          avatar_url: ${{ secrets.GH_AVATAR_URL }}
+
+      - name: Notify failure
+        uses: sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: Build failed
+          status: ${{ needs.simple_deployment_pipeline.result }}
+          title: 'Deploy'
+          color: 0xFF0000
+          username: GitHub
+          avatar_url: ${{ secrets.GH_AVATAR_URL }}
