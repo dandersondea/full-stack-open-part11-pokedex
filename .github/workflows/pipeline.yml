@@ -69,6 +69,7 @@ jobs:
 
   notify_discord:
     needs: [simple_deployment_pipeline]
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
