@@ -72,21 +72,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
-        uses: rjstone/discord-webhook-notify@v2
+        uses: sarisia/actions-status-discord@v1
         if: success()
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: info
-          details: All tests passed
-          text: A new version of Pokedex deployed
-          title: Title pending
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: A new version of Pokedex deployed
+          status: ${{ job.status }}
+          title: 'Deploy'
+          color: 0x00FF00
+          username: GitHub
+          avatar_url: ${{ secrets.GH_AVATAR_URL }}
 
       - name: Notify failure
-        uses: rjstone/discord-webhook-notify@v2
+        uses: sarisia/actions-status-discord@v1
         if: failure()
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: error
-          details: Details pending
-          text: Build failed
-          title: Title pending
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: Build failed
+          status: ${{ job.status }}
+          title: 'Deploy'
+          color: 0xFF0000
+          username: GitHub
+          avatar_url: ${{ secrets.GH_AVATAR_URL }}
