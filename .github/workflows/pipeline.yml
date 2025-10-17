@@ -69,11 +69,12 @@ jobs:
 
   notify_discord:
     needs: [simple_deployment_pipeline]
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
         uses: sarisia/actions-status-discord@v1
-        if: needs.simple_deployment_pipeline.result == 'success' && github.event_name == 'push' && needs.check_commit_messages_for_skip.outputs.status != 'true'
+        if: success() && github.event_name == 'push' && needs.check_commit_messages_for_skip.outputs.status != 'true'
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           content: A new version of Pokedex deployed
@@ -85,7 +86,7 @@ jobs:
 
       - name: Notify failure
         uses: sarisia/actions-status-discord@v1
-        if: needs.simple_deployment_pipeline.result == 'failure'
+        if: failure()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           content: Build failed
