@@ -1,7 +1,7 @@
 name: Ping
 on:
   schedule:
-    - cron: '0/5 * * * *'
+    - cron: '0/10 * * * *'
 
 jobs:
   ping:
@@ -12,7 +12,7 @@ jobs:
         uses: jtalk/url-health-check-action@v4
         with:
           # Check the following URLs one by one sequentially
-          url: https://pokedex-fso-danderson.fly.dev/version
+          url: https://pokedex-fso-danderson.fly.dev/health
           #   url: https://pokedex-fso-danderson.fly.dev/health
           # Fail this action after this many failed attempts
           max-attempts: 3 # Optional, defaults to 1
