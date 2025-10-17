@@ -19,12 +19,11 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-      - name: github.event.commits + github.event.commits.*.message
+      - name: commits
         env:
           COMMITS: ${{ toJson(github.event.commits) }}
-        run: |
-          echo "All commits JSON:"
-          echo "$COMMITS"
-
-          echo "Extracted messages:"
-          echo "$COMMITS" | jq -r '.[].message'
+        run: echo "$COMMITS"
+      - name: commit messages
+        env:
+          COMMIT_MESSAGES: ${{ fromJson(toJson(github.event.commits)).*.message }} # The .*. (wildcard) selector isn't supported inside ${{ ... }} -- GitHub Actions expressions don't allow you to map or iterate over arrays directly like that.
+        run: echo "$COMMIT_MESSAGES"
