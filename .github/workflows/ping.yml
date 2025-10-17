@@ -1,0 +1,48 @@
+name: Ping
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          # Check the following URLs one by one sequentially
+          url: https://pokedex-fso-danderson.fly.dev/health
+          # Fail this action after this many failed attempts
+          max-attempts: 3 # Optional, defaults to 1
+          # Delay between retries
+          retry-delay: 5s # Optional, only applicable to max-attempts > 1
+
+  notify_discord:
+    needs: [ping]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify success
+        uses: sarisia/actions-status-discord@v1
+        if: needs.ping.result == 'success'
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: Pokedex running
+          status: ${{ needs.ping.result }}
+          title: 'Ping'
+          color: 0x00FF00
+          username: GitHub
+          avatar_url: ${{ secrets.GH_AVATAR_URL }}
+
+      - name: Notify failure
+        uses: sarisia/actions-status-discord@v1
+        if: needs.ping.result == 'failure'
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: Pokedex is down
+          status: ${{ needs.ping.result }}
+          title: 'Ping'
+          color: 0xFF0000
+          username: GitHub
+          avatar_url: ${{ secrets.GH_AVATAR_URL }}
