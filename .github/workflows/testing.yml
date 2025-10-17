@@ -42,4 +42,4 @@ jobs:
 
       - name: confirm skip
         if: ${{ needs.check_commit_messages_for_skip.outputs.status == 'true' }}
-        run: '#skip confirmed'
+        run: echo "#skip confirmed"
