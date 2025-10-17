@@ -19,12 +19,12 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-      - name: github.event.commits
+      - name: github.event.commits + github.event.commits.*.message
         env:
           COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS"
+        run: |
+          echo "All commits JSON:"
+          echo "$COMMITS"
 
-      - name: github.event.commits.*.message
-        env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-        run: echo "$COMMIT_MESSAGES
+          echo "Extracted messages:"
+          echo "$COMMITS" | jq -r '.[].message'
