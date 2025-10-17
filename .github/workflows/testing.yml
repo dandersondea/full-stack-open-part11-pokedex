@@ -43,3 +43,8 @@ jobs:
       - name: confirm skip
         if: ${{ needs.check_commit_messages_for_skip.outputs.status == 'true' }}
         run: echo "#skip confirmed"
+
+      - name: Discord webhook URL
+        run: echo "$DISCORD_WEBHOOK"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
