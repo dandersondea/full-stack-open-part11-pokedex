@@ -66,3 +66,27 @@ jobs:
           DEFAULT_BUMP: 'patch'
           INITIAL_VERSION: 0.0.0
           # DRY_RUN: true
+
+  notify_discord:
+    needs: [simple_deployment_pipeline, tag_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify success
+        uses: rjstone/discord-webhook-notify@v2
+        if: success()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          details: All tests passed
+          text: A new version of Pokedex deployed
+          title: Title pending
+
+      - name: Notify failure
+        uses: rjstone/discord-webhook-notify@v2
+        if: failure()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: error
+          details: Details pending
+          text: Build failed
+          title: Title pending
