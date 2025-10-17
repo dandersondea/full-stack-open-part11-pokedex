@@ -68,7 +68,7 @@ jobs:
           # DRY_RUN: true
 
   notify_discord:
-    needs: [simple_deployment_pipeline, tag_release]
+    needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
@@ -77,7 +77,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           content: A new version of Pokedex deployed
-          status: ${{ job.status }}
+          status: ${{ needs.simple_deployment_pipeline.result }}
           title: 'Deploy'
           color: 0x00FF00
           username: GitHub
@@ -89,7 +89,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           content: Build failed
-          status: ${{ job.status }}
+          status: ${{ needs.simple_deployment_pipeline.result }}
           title: 'Deploy'
           color: 0xFF0000
           username: GitHub
